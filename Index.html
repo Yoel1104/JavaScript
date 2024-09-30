@@ -3,112 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD App</title>
     <link rel="stylesheet" href="style.css">
+    <title>ProductList App</title>
 </head>
 <body>
     <header>
-        <h1>CRUD App</h1>
+        <h1>ProductList App</h1>
     </header>
-    
-    <main>
-        <section id="form-section">
-            <h2>Añadir Producto</h2>
-            <input type="text" id="product-name" placeholder="Nombre del producto">
-            <input type="number" id="product-price" placeholder="Precio del producto">
-            <input type="text" id="product-description" placeholder="Descripción del producto">
-            <button id="add-product">Añadir Producto</button>
-        </section>
 
-        <section id="product-list">
-            <h2>Lista de Productos</h2>
-            <ul id="products"></ul>
-            <p id="no-products" style="display: none;">Aún no hay productos</p>
-        </section>
+    <main>
+        <div class="box"> <!-- Contenedor con fondo morado claro -->
+            <h2 class="center">Agregar Producto</h2> <!-- Título centrado para agregar producto -->
+            <form id="product-form">
+                <input type="text" id="product-name" placeholder="Nombre del producto" required>
+                <textarea id="product-description" placeholder="Descripción del producto" required></textarea>
+                <button type="submit">Agregar Producto</button>
+            </form>
+        </div>
+
+        <div class="box"> <!-- Contenedor con fondo morado claro -->
+            <h2 class="center">Lista de Productos</h2> <!-- Título centrado para la lista de productos -->
+            <ul id="list"></ul>
+        </div>
     </main>
 
-    <footer>
-        CRUD App © 2024
-    </footer>
-
-    <div id="edit-modal" style="display: none;">
-        <h2>Actualizar Producto</h2>
-        <input type="text" id="edit-product-name" placeholder="Nombre del producto">
-        <input type="number" id="edit-product-price" placeholder="Precio del producto">
-        <input type="text" id="edit-product-description" placeholder="Descripción del producto">
-        <button id="update-product">Actualizar</button>
-        <button id="cancel-update">Cancelar</button>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Actualizar Producto</h2>
+            <form id="update-form">
+                <input type="hidden" id="update-id">
+                <input type="text" id="update-name" required>
+                <textarea id="update-description" required></textarea>
+                <button type="submit">Actualizar Producto</button>
+            </form>
+        </div>
     </div>
 
-    <script>
-        let products = JSON.parse(localStorage.getItem('products')) || [];
-        const productsList = document.getElementById('products');
-        const noProductsMessage = document.getElementById('no-products');
+    <div id="delete-modal" class="modal">
+        <div class="modal-content">
+            <h2>¿Estás seguro?</h2>
+            <button id="confirm-delete">✔</button>
+            <button id="cancel-delete">✖</button>
+        </div>
+    </div>
 
-        function renderProducts() {
-            productsList.innerHTML = '';
-            products.forEach((product, index) => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    ${product.name} - $${product.price} <br>
-                    ${product.description}
-                    <button onclick="editProduct(${index})">Editar</button>
-                    <button onclick="confirmDelete(${index})">Borrar</button>
-                `;
-                productsList.appendChild(li);
-            });
-            noProductsMessage.style.display = products.length ? 'none' : 'block';
-        }
+    <footer>
+        <p>ProductList App © 2024 by Yoel López</p>
+    </footer>
 
-        document.getElementById('add-product').onclick = function() {
-            const name = document.getElementById('product-name').value;
-            const price = document.getElementById('product-price').value;
-            const description = document.getElementById('product-description').value;
-
-            if (name && price && description) {
-                products.push({ name, price, description });
-                localStorage.setItem('products', JSON.stringify(products));
-                renderProducts();
-                document.getElementById('product-name').value = '';
-                document.getElementById('product-price').value = '';
-                document.getElementById('product-description').value = '';
-            } else {
-                alert('Por favor completa todos los campos.');
-            }
-        };
-
-        function editProduct(index) {
-            const product = products[index];
-            document.getElementById('edit-product-name').value = product.name;
-            document.getElementById('edit-product-price').value = product.price;
-            document.getElementById('edit-product-description').value = product.description;
-            document.getElementById('edit-modal').style.display = 'block';
-
-            document.getElementById('update-product').onclick = function() {
-                const updatedName = document.getElementById('edit-product-name').value;
-                const updatedPrice = document.getElementById('edit-product-price').value;
-                const updatedDescription = document.getElementById('edit-product-description').value;
-
-                products[index] = { name: updatedName, price: updatedPrice, description: updatedDescription };
-                localStorage.setItem('products', JSON.stringify(products));
-                renderProducts();
-                document.getElementById('edit-modal').style.display = 'none';
-            };
-
-            document.getElementById('cancel-update').onclick = function() {
-                document.getElementById('edit-modal').style.display = 'none';
-            };
-        }
-
-        function confirmDelete(index) {
-            if (confirm('¿Estás seguro de que deseas borrar este producto?')) {
-                products.splice(index, 1);
-                localStorage.setItem('products', JSON.stringify(products));
-                renderProducts();
-            }
-        }
-
-        renderProducts();
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
